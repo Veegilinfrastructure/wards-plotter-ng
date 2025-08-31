@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nigeria LGA Ward Plotter</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        select { margin: 10px 0; padding: 5px; width: 300px; }
+        button { padding: 10px 20px; }
+        img { margin-top: 20px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Select State and LGAs</h1>
+    <form method="POST">
+        <label for="state">State:</label><br>
+        <select name="state" onchange="this.form.submit()">
+            <option value="">--Select State--</option>
+            {% for state in states %}
+                <option value="{{ state }}" {% if state == selected_state %}selected{% endif %}>{{ state }}</option>
+            {% endfor %}
+        </select><br>
+
+        {% if lgas %}
+        <label for="lga">LGAs (hold Ctrl or Cmd to select multiple):</label><br>
+        <select name="lga" multiple size="6">
+            {% for lga in lgas %}
+                <option value="{{ lga }}" {% if lga in selected_lgas %}selected{% endif %}>{{ lga }}</option>
+            {% endfor %}
+        </select><br>
+        <button type="submit">Generate Map</button>
+        {% endif %}
+    </form>
+
+    {% if map_filename %}
+        <h2>Map Output</h2>
+        <img src="{{ url_for('serve_map', filename=map_filename) }}" width="800">
+        <p>Also available in 
+            <a href="{{ url_for('serve_map', filename=map_filename.replace('.png', '.pdf')) }}">PDF</a> and 
+            <a href="{{ url_for('serve_map', filename=map_filename.replace('.png', '.svg')) }}">SVG</a>
+        </p>
+    {% endif %}
+</body>
+</html>
